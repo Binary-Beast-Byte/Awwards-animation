@@ -1,6 +1,6 @@
 
 
-section {
+/* section {
   position: relative;
   width: 100vw;
   height: 100svh;
@@ -90,3 +90,18 @@ will-change: transform;
   }
 
 }
+ */
+
+
+ * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ }
+
+ img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+ 
+ }

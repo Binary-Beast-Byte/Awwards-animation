@@ -1,13 +1,8 @@
-import './App.css'
-import { TeamHover } from './Teams-hover/TeamHover'
+import "./App.css";
+import { TrippyIndex } from "./TrippySlider/TrippyIndex";
 
 function App() {
-
-  return (
-    <>
-   <TeamHover />
-    </>
-  )
+  return <TrippyIndex />;
 }
 
-export default App
+export default App;

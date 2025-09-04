@@ -1,4 +1,4 @@
-import  { useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import SplitText from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
@@ -7,8 +7,10 @@ gsap.registerPlugin(SplitText);
 
 const NAMES = [
   "Olivia", "Liam", "Emma", "Noah", "Ava",
-  "Oliver", "Isabella", "Elijah", "Sophia", "James",
+  "Oliver", "Isabella", "Elijah", "Sophia",
 ];
+
+const DEFAULT_NAME = "G.SOCK";
 
 export const TeamHover = () => {
   const imageRefs = useRef([]);
@@ -29,22 +31,22 @@ export const TeamHover = () => {
     if (window.innerWidth <= 900) return;
 
     // Split each name's h1 into chars and add "letter" class
-    const nameHeadings = nameRefs.current.map(ref => ref.querySelector("h1"));
+    const nameHeadings = nameRefs.current.map(ref => ref?.querySelector("h1"));
     nameHeadings.forEach((heading) => {
       if (!heading) return;
       const split = new SplitText(heading, { type: "chars" });
       split.chars.forEach(char => char.classList.add("letter"));
     });
 
-    // Set initial y of default letters (Olivia)
-    const defaultName = nameRefs.current[0];
-    if (defaultName) {
-      defaultLetters.current = Array.from(defaultName.querySelectorAll(".letter"));
+    // Animate the default name (index 0)
+    const defaultNameEl = nameRefs.current[0];
+    if (defaultNameEl) {
+      defaultLetters.current = Array.from(defaultNameEl.querySelectorAll(".letter"));
       gsap.set(defaultLetters.current, { y: "100%" });
     }
 
     const handleMouseEnter = (imgEl, index) => {
-      const nameEl = nameRefs.current[index];
+      const nameEl = nameRefs.current[index + 1]; // shift by +1
       const letters = nameEl?.querySelectorAll(".letter");
       if (!letters) return;
 
@@ -64,7 +66,7 @@ export const TeamHover = () => {
     };
 
     const handleMouseLeave = (imgEl, index) => {
-      const nameEl = nameRefs.current[index];
+      const nameEl = nameRefs.current[index + 1]; // shift by +1
       const letters = nameEl?.querySelectorAll(".letter");
       if (!letters) return;
 
@@ -83,7 +85,7 @@ export const TeamHover = () => {
       });
     };
 
-    // Attach event listeners to images
+    // Attach hover events to images
     imageRefs.current.forEach((img, i) => {
       const onEnter = () => handleMouseEnter(img, i);
       const onLeave = () => handleMouseLeave(img, i);
@@ -91,14 +93,14 @@ export const TeamHover = () => {
       img.addEventListener("mouseenter", onEnter);
       img.addEventListener("mouseleave", onLeave);
 
-      // Cleanup function to remove listeners when component unmounts
+      // Cleanup
       return () => {
         img.removeEventListener("mouseenter", onEnter);
         img.removeEventListener("mouseleave", onLeave);
       };
     });
 
-    // Profile container hover to animate default letters
+    // Show/hide default name on container hover
     const container = profileContainerRef.current;
     if (container) {
       const showDefault = () => {
@@ -145,11 +147,20 @@ export const TeamHover = () => {
       </div>
 
       <div className="profile-names">
+        {/* Default Name - Not from the NAMES array */}
+        <div
+          className="name default"
+          ref={(el) => setNameRef(el, 0)} // default at index 0
+        >
+          <h1>{DEFAULT_NAME}</h1>
+        </div>
+
+        {/* Remaining names */}
         {NAMES.map((name, i) => (
           <div
             key={name}
-            className={`name ${i === 0 ? "default" : ""}`}
-            ref={(el) => setNameRef(el, i)}
+            className="name"
+            ref={(el) => setNameRef(el, i + 1)} // shift index by +1
           >
             <h1>{name}</h1>
           </div>
